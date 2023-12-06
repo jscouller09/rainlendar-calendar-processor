@@ -24,10 +24,14 @@ for entry in entries:
             jobs.append(job_dict)
 
 for job in jobs:
-    path = Path(os.getcwd(), '{}.lnk'.format(job['SUMMARY'].replace(':', ''))).as_posix()
-    target = Path(job['URL']).as_posix()
-
-    shell = Dispatch('WScript.Shell')
-    shortcut = shell.CreateShortCut(path)
-    shortcut.Targetpath = target
-    shortcut.save()
+    path = Path(os.getcwd(), 'Shortcuts', '{}.lnk'.format(job['SUMMARY'].replace(':', '').replace('/', ' ')))
+    target = Path(job['URL'])
+    if target.exists():
+        try:
+            shell = Dispatch('WScript.Shell')
+            shortcut = shell.CreateShortCut('{}'.format(path))
+            str_target = '{}'.format(target)
+            shortcut.Targetpath = str_target
+            shortcut.save()
+        except Exception:
+            print('Error making shortcut: {} {}'.format(job['SUMMARY'], str_target))
